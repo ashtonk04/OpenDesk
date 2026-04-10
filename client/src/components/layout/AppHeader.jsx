@@ -1,8 +1,12 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Icon from '../shared/Icon'
+import { useAuth } from '../../contexts/AuthContext'
 
 export default function AppHeader({ mode = 'home', title = 'The Scholarly Observatory', onMenu }) {
   const navigate = useNavigate()
+  const { user, logout } = useAuth()
+  const [showUserMenu, setShowUserMenu] = useState(false)
 
   if (mode === 'detail') {
     return (
@@ -38,8 +42,41 @@ export default function AppHeader({ mode = 'home', title = 'The Scholarly Observ
           </button>
           <h1 className="font-headline font-black text-primary tracking-tighter text-lg">{title}</h1>
         </div>
-        <div className="w-9 h-9 rounded-full bg-surface-container-high flex items-center justify-center overflow-hidden">
-          <Icon name="person" className="text-on-surface-variant" />
+
+        {/* User avatar + dropdown */}
+        <div className="relative">
+          <button
+            onClick={() => setShowUserMenu(v => !v)}
+            className="w-9 h-9 rounded-full bg-primary flex items-center justify-center active:scale-95 transition-transform"
+          >
+            <span className="font-headline font-bold text-on-primary text-sm">
+              {user?.name?.[0]?.toUpperCase() ?? '?'}
+            </span>
+          </button>
+
+          {showUserMenu && (
+            <>
+              {/* Backdrop */}
+              <div
+                className="fixed inset-0 z-40"
+                onClick={() => setShowUserMenu(false)}
+              />
+              {/* Menu */}
+              <div className="absolute right-0 top-11 z-50 bg-surface-container-low rounded-2xl shadow-lg border border-outline-variant min-w-[180px] overflow-hidden">
+                <div className="px-4 py-3 border-b border-outline-variant">
+                  <p className="font-headline font-bold text-on-surface text-sm truncate">{user?.name}</p>
+                  <p className="font-label text-on-surface-variant text-xs truncate">{user?.email}</p>
+                </div>
+                <button
+                  onClick={() => { setShowUserMenu(false); logout() }}
+                  className="w-full flex items-center gap-2 px-4 py-3 text-sm font-label text-error hover:bg-error-container/50 transition-colors"
+                >
+                  <Icon name="logout" size={16} className="text-error" />
+                  Sign out
+                </button>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </header>
