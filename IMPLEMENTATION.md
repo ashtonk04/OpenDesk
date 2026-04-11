@@ -11,3 +11,5 @@ Distribution: The processed data is stored in a database and pushed to all activ
 Frontend : AI was used in the design enhancement and development.
 Backend : We will be using integrating our program with AWS 
 
+
+AI Usage: AI was involved in the development of the User Interface
