@@ -8,6 +8,6 @@ Processing: The backend receives these reports and calculates the current "Live"
 
 Distribution: The processed data is stored in a database and pushed to all active clients to update the home screen list.
 
-Frontend : 
+Frontend : AI was used in the design enhancement and development.
 Backend : We will be using integrating our program with AWS 
 
