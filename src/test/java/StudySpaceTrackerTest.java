@@ -1,10 +1,10 @@
-
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 
 public class StudySpaceTrackerTest {
 
@@ -36,10 +36,10 @@ public class StudySpaceTrackerTest {
         tracker.addLocation(library);
         tracker.addLocationStats(libraryStats);
     }
-    
+
+    //-------------- addLocation() Tests ----------------------------
     @Test
-    public void addLocationNewSpotTest()
-    {
+    public void addLocationNewSpotTest() {
         Location squires = new Location("2", "Squires");
 
         tracker.addLocation(squires);
@@ -48,3 +48,4 @@ public class StudySpaceTrackerTest {
         assertTrue(tracker.getAllLocations().contains(squires));
     }
 }
+
