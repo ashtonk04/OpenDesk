@@ -47,5 +47,4 @@ public class StudySpaceTrackerTest {
         assertEquals(2, tracker.getAllLocations().size());
         assertTrue(tracker.getAllLocations().contains(squires));
     }
-}cd '/home/ugrads/majors/lshepherd/OpenDesk'
-
+}
