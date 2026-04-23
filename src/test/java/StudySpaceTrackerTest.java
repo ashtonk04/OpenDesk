@@ -150,6 +150,20 @@ public class StudySpaceTrackerTest {
         assertTrue(results.isEmpty());
     }
 
+    @Test //probably dont need just yet 
+    public void filterByNoiseNullNoiseLevelTest()
+    {
+        Location squires = new Location("2", "Squires");
+        LocationStats squiresStats = new LocationStats();
+        squiresStats.setLocation(squires);
+        squiresStats.setNoiseLevel(null);
+
+        tracker.addLocation(squires);
+        tracker.addLocationStats(squiresStats);
+
+        List<LocationStats> results = tracker.filterByNoise("Quiet");
+        assertTrue(results.isEmpty());
+    }
     /**
      * getAllLocations when empty
      * addLocation when duplicate
