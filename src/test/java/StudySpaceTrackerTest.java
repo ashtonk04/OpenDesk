@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.List;
 
 public class StudySpaceTrackerTest {
 
@@ -13,6 +12,7 @@ public class StudySpaceTrackerTest {
     private Location library;
     private LocationStats libraryStats;
 
+    @BeforeEach
     public void setUp() {
         tracker = new StudySpaceTracker();
 
@@ -47,4 +47,5 @@ public class StudySpaceTrackerTest {
         assertEquals(2, tracker.getAllLocations().size());
         assertTrue(tracker.getAllLocations().contains(squires));
     }
-}
+}cd '/home/ugrads/majors/lshepherd/OpenDesk'
+

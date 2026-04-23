@@ -33,7 +33,7 @@ public class StudySpaceTracker
         for (Location l : locations)
         {
             //Checks for equality regardless of upper/lower case chars
-            if (location.getName().equalsIgnoreCase(name))
+            if (l.getName().equalsIgnoreCase(name))
             {
                 return l;
             }
@@ -55,7 +55,7 @@ public class StudySpaceTracker
         List<LocationStats> matches = new ArrayList<LocationStats>();
         for (LocationStats stats : locationStatsList)
         {
-            if (stats.getNoiesLevel() != null &&  stats.getNoiseLevel().equalsIgnoreCase(noiseLevel))
+            if (stats.getNoiseLevel() != null &&  stats.getNoiseLevel().equalsIgnoreCase(noiseLevel))
             {
                 matches.add(stats);
             }
