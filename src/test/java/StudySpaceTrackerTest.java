@@ -168,4 +168,20 @@ public class StudySpaceTrackerTest {
      * getAllLocations when empty
      * addLocation when duplicate
      */
+
+
+    @Test
+    public void addLocationDuplicateTest()
+    {
+        Location duplicateLibrary = new Location("1", "Newman Library");
+
+        tracker.addLocation(duplicateLibrary);
+
+        List<Location> results = tracker.getAllLocations();
+
+        // Since no duplicate prevention exists, both should be present
+        assertEquals(2, results.size());
+        assertTrue(results.contains(library));
+        assertTrue(results.contains(duplicateLibrary));
+    }
 }
