@@ -7,6 +7,9 @@ import SpotDetailPage from './pages/SpotDetailPage'
 import QuickReportPage from './pages/QuickReportPage'
 import ReportConfirmPage from './pages/ReportConfirmPage'
 import AuthPage from './pages/AuthPage'
+import FavoritesPage from './pages/FavoritesPage'
+import ProfilePage from './pages/ProfilePage'
+import ReportsPage from './pages/ReportsPage'
 
 function ProtectedRoute({ children }) {
   const { user } = useAuth()
@@ -24,26 +27,47 @@ function AppRoutes() {
           path="/auth"
           element={user ? <Navigate to="/" replace /> : <AuthPage />}
         />
+
         <Route
           path="/"
           element={<ProtectedRoute><BrowsePage /></ProtectedRoute>}
         />
+
         <Route
           path="/map"
           element={<ProtectedRoute><MapPage /></ProtectedRoute>}
         />
+
         <Route
           path="/spots/:spotId"
           element={<ProtectedRoute><SpotDetailPage /></ProtectedRoute>}
         />
+
         <Route
           path="/spots/:spotId/report"
           element={<ProtectedRoute><QuickReportPage /></ProtectedRoute>}
         />
+
         <Route
           path="/spots/:spotId/report/confirm"
           element={<ProtectedRoute><ReportConfirmPage /></ProtectedRoute>}
         />
+
+        <Route
+          path="/reports"
+          element={<ProtectedRoute><ReportsPage /></ProtectedRoute>}
+        />
+
+        <Route
+          path="/saved"
+          element={<ProtectedRoute><FavoritesPage /></ProtectedRoute>}
+        />
+
+        <Route
+          path="/profile"
+          element={<ProtectedRoute><ProfilePage /></ProtectedRoute>}
+        />
+
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>

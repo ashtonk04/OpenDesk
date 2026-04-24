@@ -73,22 +73,44 @@ export function SpotsProvider({ children }) {
   const [spots, setSpots] = useState(SEED_SPOTS)
   const [loading, setLoading] = useState(false)
 
+  const [favorites, setFavorites] = useState(() => {
+    const saved = localStorage.getItem('favoriteSpots')
+    return saved ? JSON.parse(saved) : []
+  })
+
+  useEffect(() => {
+    localStorage.setItem('favoriteSpots', JSON.stringify(favorites))
+  }, [favorites])
+
   const updateSpot = useCallback((updatedSpot) => {
     setSpots(prev =>
       prev.map(s => s.id === updatedSpot.id ? { ...s, ...updatedSpot } : s)
     )
   }, [])
 
-  // Fetch from API (falls back to seed data if server is down)
+  const toggleFavorite = useCallback((spotId) => {
+    setFavorites(prev =>
+      prev.includes(spotId)
+        ? prev.filter(id => id !== spotId)
+        : [...prev, spotId]
+    )
+  }, [])
+
+  const isFavorite = useCallback((spotId) => {
+    return favorites.includes(spotId)
+  }, [favorites])
+
   useEffect(() => {
     setLoading(true)
     fetch('/api/spots')
       .then(r => r.json())
-      .then(data => { setSpots(data); setLoading(false) })
+      .then(data => {
+        setSpots(data)
+        setLoading(false)
+      })
       .catch(() => setLoading(false))
   }, [])
 
-  // SSE subscription — Observer pattern
   useEffect(() => {
     const es = new EventSource('/api/events')
     es.addEventListener('spot-updated', (e) => {
@@ -98,7 +120,16 @@ export function SpotsProvider({ children }) {
   }, [updateSpot])
 
   return (
-    <SpotsContext.Provider value={{ spots, loading, updateSpot }}>
+    <SpotsContext.Provider
+      value={{
+        spots,
+        loading,
+        updateSpot,
+        favorites,
+        toggleFavorite,
+        isFavorite,
+      }}
+    >
       {children}
     </SpotsContext.Provider>
   )
@@ -110,5 +141,9 @@ export function useSpots() {
 
 export function useSpot(spotId) {
   const { spots, loading } = useContext(SpotsContext)
-  return { spot: spots.find(s => s.id === spotId) ?? null, loading }
+
+  return {
+    spot: spots.find(s => s.id === spotId) ?? null,
+    loading,
+  }
 }
