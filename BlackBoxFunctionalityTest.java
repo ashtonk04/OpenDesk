@@ -3,7 +3,7 @@ public class BlackBoxFunctionalityTest
     //Verifies app displays all spaces with busyness level on home screen
      public void homeScreenDisplaysStudySpaces()
      {
-
+        //Test code to verify that the home screen displays all study spaces with their busyness levels
      }
 
      //Verifies selected study space displays its data 

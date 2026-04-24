@@ -150,8 +150,8 @@ public class StudySpaceTrackerTest {
         assertTrue(results.isEmpty());
     }
 
-    @Test //probably dont need just yet 
-    public void filterByNoiseNullNoiseLevelTest()
+    @Test  
+    public void filterByNoiseNullTest()
     {
         Location squires = new Location("2", "Squires");
         LocationStats squiresStats = new LocationStats();
