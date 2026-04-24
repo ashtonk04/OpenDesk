@@ -43,10 +43,15 @@ public class StudySpaceTracker
         return null;
     }
 
-    //Returns all study spots 
+    //Returns all study spots
     public List<Location> getAllLocations()
     {
         return locations;
+    }
+
+    public List<LocationStats> getLocationStatsList()
+    {
+        return locationStatsList;
     }
 
     //Gets study spaces based on filtered noise level, each match added and returned 

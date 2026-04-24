@@ -162,7 +162,9 @@ public class StudySpaceTrackerTest {
         tracker.addLocationStats(squiresStats);
 
         List<LocationStats> results = tracker.filterByNoise("Quiet");
-        assertTrue(results.isEmpty());
+        // Only libraryStats (from setUp) should match; squiresStats has null noise and must be excluded
+        assertEquals(1, results.size());
+        assertFalse(results.contains(squiresStats));
     }
     /**
      * getAllLocations when empty
@@ -183,5 +185,34 @@ public class StudySpaceTrackerTest {
         assertEquals(2, results.size());
         assertTrue(results.contains(library));
         assertTrue(results.contains(duplicateLibrary));
+    }
+
+    // -------- Integration Tests --------
+
+    @Test
+    public void submitReportThenRecommenderReflectsUpdatedDataTest()
+    {
+        Location squires = new Location("2", "Squires");
+        squires.setCapacity(60);
+        LocationStats squiresStats = new LocationStats();
+        squiresStats.setLocation(squires);
+        squiresStats.setNoiseLevel("Loud");
+        squiresStats.setCrowdLevel("High");
+        squiresStats.setOutletsAvailable(false);
+
+        tracker.addLocation(squires);
+        tracker.addLocationStats(squiresStats);
+
+        // Degrade library via report: now loud, high crowd, no outlets
+        tracker.submitReport("Newman Library", "High", "Loud", false);
+
+        StudySpaceRecommender recommender = new StudySpaceRecommender(tracker.getLocationStatsList());
+        UserPreferences prefs = new UserPreferences(true, true, "Low", 0);
+        List<LocationStats> results = recommender.recommend(prefs);
+
+        assertEquals(2, results.size());
+        // Library was degraded — neither space matches quiet+outlets, both score 0
+        assertTrue(results.contains(libraryStats));
+        assertTrue(results.contains(squiresStats));
     }
 }
