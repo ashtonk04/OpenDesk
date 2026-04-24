@@ -77,6 +77,37 @@ public class StudySpaceTracker
         }
         return matches;
     }
+
+    //Returns top study spaces ranked by desirability
+    public List<LocationStats> getTopStudySpaces()
+    {
+        List<LocationStats> all = new ArrayList<>(locationStatsList);
+
+        all.sort((a, b) -> {
+            int scoreA = score(a);
+            int scoreB = score(b);
+            return Integer.compare(scoreB, scoreA);
+        });
+
+        return all;
+    }
+
+    //Helper method to calculate ranking score
+    private int score(LocationStats stats)
+    {
+        int score = 0;
+
+        if ("QUIET".equalsIgnoreCase(stats.getNoiseLevel())) score += 3;
+        if ("LOW".equalsIgnoreCase(stats.getCrowdLevel())) score += 3;
+        if (stats.isOutletsAvailable()) score += 2;
+
+        if (stats.getLocation() != null)
+        {
+            score += stats.getLocation().getCapacity() / 10;
+        }
+
+        return score;
+    }
  
     //Sumbit report to update a space's data, only updates provided data 
     public void submitReport(String locationName, String busyness, String noise, Boolean outlets)
