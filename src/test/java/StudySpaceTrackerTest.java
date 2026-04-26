@@ -161,7 +161,7 @@ public class StudySpaceTrackerTest {
         tracker.addLocation(squires);
         tracker.addLocationStats(squiresStats);
 
-        List<LocationStats> results = tracker.filterByNoise("Quiet");
+        List<LocationStats> results = tracker.filterByNoise("Loud");
         assertTrue(results.isEmpty());
     }
     /**
