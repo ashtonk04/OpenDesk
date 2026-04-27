@@ -2,6 +2,12 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.opendesk.Location;
+import com.opendesk.LocationStats;
+import com.opendesk.StudySpaceRecommender;
+import com.opendesk.StudySpaceTracker;
+import com.opendesk.UserPreferences;
+
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;

@@ -2,6 +2,8 @@ import { createContext, useContext, useState, useEffect, useCallback } from 'rea
 
 const SpotsContext = createContext(null)
 
+const API_BASE_URL = 'http://localhost:8080'
+
 const SEED_SPOTS = [
   {
     id: 'newman-library',
@@ -102,22 +104,25 @@ export function SpotsProvider({ children }) {
 
   useEffect(() => {
     setLoading(true)
-    fetch('/api/spots')
-      .then(r => r.json())
+
+    fetch(`${API_BASE_URL}/api/spots`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to fetch study spots')
+        }
+
+        return response.json()
+      })
       .then(data => {
         setSpots(data)
+      })
+      .catch(error => {
+        console.error('Using seed spots because backend fetch failed:', error)
+      })
+      .finally(() => {
         setLoading(false)
       })
-      .catch(() => setLoading(false))
   }, [])
-
-  useEffect(() => {
-    const es = new EventSource('/api/events')
-    es.addEventListener('spot-updated', (e) => {
-      updateSpot(JSON.parse(e.data))
-    })
-    return () => es.close()
-  }, [updateSpot])
 
   return (
     <SpotsContext.Provider

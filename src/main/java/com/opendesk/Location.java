@@ -1,3 +1,4 @@
+package com.opendesk;
 import jakarta.persistence.*;
 import java.util.Set;
 

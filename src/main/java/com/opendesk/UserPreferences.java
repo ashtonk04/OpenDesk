@@ -1,3 +1,4 @@
+package com.opendesk;
 public class UserPreferences {
 
     private boolean wantsQuiet;
