@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import AppHeader from '../components/layout/AppHeader'
 import Icon from '../components/shared/Icon'
-import { useSpot } from '../contexts/SpotsContext'
+import { useSpot, useSpots } from '../contexts/SpotsContext'
 
 const API_BASE_URL = 'http://localhost:8080'
 
@@ -28,6 +28,7 @@ function SelectGrid({ options, value, onChange }) {
     <div className={`grid gap-3 ${options.length === 2 ? 'grid-cols-2' : 'grid-cols-3'}`}>
       {options.map(opt => {
         const selected = value === opt.value
+
         return (
           <button
             key={String(opt.value)}
@@ -37,7 +38,9 @@ function SelectGrid({ options, value, onChange }) {
             }`}
           >
             <Icon name={opt.icon} size={28} style={{ color: opt.color }} />
-            <span className="text-xs font-label font-semibold text-on-surface">{opt.label}</span>
+            <span className="text-xs font-label font-semibold text-on-surface">
+              {opt.label}
+            </span>
           </button>
         )
       })}
@@ -49,14 +52,17 @@ export default function QuickReportPage() {
   const { spotId } = useParams()
   const navigate = useNavigate()
   const { spot } = useSpot(spotId)
+  const { updateSpot } = useSpots()
 
   const [noise, setNoise] = useState('moderate')
   const [occupancy, setOccupancy] = useState('moderate')
   const [outlets, setOutlets] = useState(true)
   const [submitting, setSubmitting] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
 
   const handleSubmit = async () => {
     setSubmitting(true)
+    setErrorMessage('')
 
     try {
       const res = await fetch(`${API_BASE_URL}/api/reports`, {
@@ -71,23 +77,28 @@ export default function QuickReportPage() {
         }),
       })
 
+      if (!res.ok) {
+        throw new Error('Server returned an error')
+      }
+
       const data = await res.json()
 
-      if (data.success) {
-        navigate(`/spots/${spotId}/report/confirm`, {
-          state: { points: data.pointsEarned, spotName: spot?.name },
-        })
+      if (!data.success) {
+        setErrorMessage(data.message ?? 'Unable to submit report. Please try again.')
+        return
       }
+
+      updateSpot(data.spot)
+
+      navigate(`/spots/${spotId}/report/confirm`, {
+        state: { points: data.pointsEarned, spotName: data.spot?.name ?? spot?.name },
+      })
     } catch (err) {
       console.error('Report failed:', err)
-
-      // fallback so demo still works
-      navigate(`/spots/${spotId}/report/confirm`, {
-        state: { points: 5, spotName: spot?.name },
-      })
+      setErrorMessage('Could not submit report. Make sure the backend server is running.')
+    } finally {
+      setSubmitting(false)
     }
-
-    setSubmitting(false)
   }
 
   return (
@@ -99,13 +110,23 @@ export default function QuickReportPage() {
           <p className="text-xs font-label uppercase tracking-widest text-on-surface-variant mb-1">
             Reporting for
           </p>
+
           <h2 className="font-headline font-bold text-on-surface text-xl">
             {spot?.name ?? spotId}
           </h2>
+
           <p className="text-sm font-label text-on-surface-variant">
             {spot?.subtitle}
           </p>
         </div>
+
+        {errorMessage && (
+          <div className="mb-6 rounded-xl bg-error-container px-4 py-3">
+            <p className="text-sm font-label text-error">
+              {errorMessage}
+            </p>
+          </div>
+        )}
 
         <div className="mb-6">
           <p className="text-xs font-label uppercase tracking-widest text-on-surface-variant mb-3">

@@ -9,10 +9,10 @@ import java.util.Map;
 @RequestMapping("/api/reports")
 @CrossOrigin(origins = "http://localhost:5173")
 public class ReportController {
-    private final StudySpaceController studySpaceController;
+    private final StudySpaceService studySpaceService;
 
-    public ReportController(StudySpaceController studySpaceController) {
-        this.studySpaceController = studySpaceController;
+    public ReportController(StudySpaceService studySpaceService) {
+        this.studySpaceService = studySpaceService;
     }
 
     @PostMapping
@@ -26,7 +26,7 @@ public class ReportController {
         }
 
         StudySpotDataTransObj updatedSpot =
-            studySpaceController.submitReport(request.spotId, backendRequest);
+            studySpaceService.submitReport(request.spotId, backendRequest);
 
         Map<String, Object> response = new HashMap<>();
 
