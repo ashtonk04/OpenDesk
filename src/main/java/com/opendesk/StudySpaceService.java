@@ -2,6 +2,7 @@ package com.opendesk;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.List;
@@ -16,6 +17,7 @@ public class StudySpaceService {
         this.studySpotRepository = studySpotRepository;
     }
 
+    @Transactional(readOnly = true)
     public List<StudySpotDataTransObj> getAllSpots() {
         return studySpotRepository.findAll(Sort.by("distance"))
             .stream()
@@ -23,12 +25,14 @@ public class StudySpaceService {
             .toList();
     }
 
+    @Transactional(readOnly = true)
     public StudySpotDataTransObj getSpotById(String id) {
         return studySpotRepository.findById(id)
             .map(this::toDto)
             .orElse(null);
     }
 
+    @Transactional
     public StudySpotDataTransObj submitReport(String id, ReportRequest request) {
         StudySpot spot = studySpotRepository.findById(id).orElse(null);
 

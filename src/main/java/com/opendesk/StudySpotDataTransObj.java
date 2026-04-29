@@ -1,4 +1,5 @@
 package com.opendesk;
+import java.util.ArrayList;
 import java.util.List;
 
 public class StudySpotDataTransObj
@@ -43,12 +44,12 @@ public class StudySpotDataTransObj
         this.noiseLevel = noiseLevel;
         this.outletStatus = outletStatus;
         this.seatStatus = seatStatus;
-        this.amenities = amenities;
+        this.amenities = new ArrayList<>(amenities);
         this.lastUpdated = lastUpdated;
         this.totalSeats = totalSeats;
         this.lat = lat;
         this.lng = lng;
-        this.hourlyBusyness = hourlyBusyness;
+        this.hourlyBusyness = new ArrayList<>(hourlyBusyness);
         this.distance = distance;
         this.imageUrl = imageUrl;
     }

@@ -14,11 +14,11 @@ const PIN_POSITIONS = {
   'goodwin-hall': { top: '60%', left: '30%' },
   'torgersen-bridge': { top: '65%', left: '25%' },
   'torgersen-atrium': { top: '62%', left: '28%' },
-  'graduate-life-center': { top: '78%', left: '52%' },
+  'graduate-life-center': { top: '54%', left: '58%' },
   'art-architecture-library': { top: '38%', left: '33%' },
-  'academic-building-one-library': { top: '24%', left: '22%' },
-  'ati-waoki-center': { top: '32%', left: '58%' },
-  'el-centro': { top: '38%', left: '58%' },
+  'vet-med-library': { top: '82%', left: '34%' },
+  'classroom-building': { top: '22%', left: '25%' },
+  'mcbryde-hall': { top: '49%', left: '30%' },
 }
 
 function getPinColor(pct, noiseLevel) {

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Set;
 
 @Component
 public class DataSeeder implements CommandLineRunner {
@@ -16,15 +17,40 @@ public class DataSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        if (studySpotRepository.count() > 0) {
-            return;
+        List<StudySpot> seeds = seedSpots();
+
+        if (needsCatalogRefresh(seeds)) {
+            studySpotRepository.deleteAll();
+            studySpotRepository.saveAll(seeds);
+        }
+    }
+
+    private boolean needsCatalogRefresh(List<StudySpot> seeds) {
+        if (studySpotRepository.count() == 0) {
+            return true;
         }
 
-        studySpotRepository.saveAll(List.of(
+        Set<String> seedIds = seeds.stream()
+            .map(StudySpot::getId)
+            .collect(java.util.stream.Collectors.toSet());
+
+        for (StudySpot seed : seeds) {
+            if (!studySpotRepository.existsById(seed.getId())) {
+                return true;
+            }
+        }
+
+        return studySpotRepository.findAll()
+            .stream()
+            .anyMatch(existing -> !seedIds.contains(existing.getId()));
+    }
+
+    private List<StudySpot> seedSpots() {
+        return List.of(
             spot(
                 "newman-library",
                 "Newman Library",
-                "Drillfield - 4th Floor Group Study Rooms",
+                "560 Drillfield Drive - Main Library Study Spaces",
                 88,
                 "moderate",
                 "scarce",
@@ -35,12 +61,12 @@ public class DataSeeder implements CommandLineRunner {
                 -80.41924,
                 List.of(30, 42, 58, 73, 88, 96, 91, 79, 64, 48),
                 0.1,
-                image("photo-1521587760476-6c12a4b040da")
+                "https://vt.edu/content/dam/vt_edu/about/buildings/images/library-2013.jpg.transform/l-medium/image.jpg"
             ),
             spot(
                 "newman-learning-commons",
                 "Newman Learning Commons",
-                "Newman Library - 2nd and 4th Floor Collaboration Areas",
+                "Newman Library - Collaborative Study Floors",
                 92,
                 "loud",
                 "scarce",
@@ -51,12 +77,12 @@ public class DataSeeder implements CommandLineRunner {
                 -80.41918,
                 List.of(35, 50, 68, 82, 94, 98, 95, 87, 72, 55),
                 0.1,
-                image("photo-1497366754035-f200968a6e72")
+                "https://lib.vt.edu/content/lib_vt_edu/en/about-us/libraries/newman/_jcr_content/content/adaptiveimage.transform/m-medium/image.JPG"
             ),
             spot(
                 "newman-quiet-floors",
                 "Newman Quiet Floors",
-                "Newman Library - 3rd and 5th Floor Quiet Study",
+                "Newman Library - Quiet Individual Study Areas",
                 79,
                 "silent",
                 "available",
@@ -67,12 +93,12 @@ public class DataSeeder implements CommandLineRunner {
                 -80.41930,
                 List.of(24, 36, 49, 62, 78, 88, 84, 74, 57, 40),
                 0.1,
-                image("photo-1507842217343-583bb7270b66")
+                "https://lib.vt.edu/content/lib_vt_edu/en/about-us/libraries/newman/_jcr_content/content/vtmultitab/vt-items_0/adaptiveimage.img.jpg/1688648865251.jpg"
             ),
             spot(
                 "torgersen-bridge",
                 "Torgersen Bridge",
-                "Torgersen Hall - Enclosed Reading Room",
+                "620 Drillfield Drive - Enclosed Reading Room",
                 83,
                 "quiet",
                 "available",
@@ -83,12 +109,12 @@ public class DataSeeder implements CommandLineRunner {
                 -80.41997,
                 List.of(18, 31, 46, 64, 82, 91, 86, 76, 62, 44),
                 0.2,
-                image("photo-1487958449943-2429e8be8625")
+                "https://www.vt.edu/content/vt_edu/en/about/locations/buildings/torgersen-hall/_jcr_content/content/adaptiveimage_1455662707750.transform/m-medium/image.jpg"
             ),
             spot(
                 "torgersen-atrium",
                 "Torgersen Atrium",
-                "Torgersen Hall - 1st Floor Electronic Study Court",
+                "Torgersen Hall - Electronic Study Court",
                 71,
                 "moderate",
                 "available",
@@ -99,12 +125,12 @@ public class DataSeeder implements CommandLineRunner {
                 -80.42008,
                 List.of(15, 28, 42, 57, 70, 82, 77, 69, 52, 36),
                 0.2,
-                image("photo-1518005020951-eccb494ad742")
+                "https://vt.edu/content/dam/vt_edu/about/buildings/images/torgersen-hall.jpg.transform/l-medium/image.jpg"
             ),
             spot(
                 "squires-student-center",
                 "Squires Student Center",
-                "College Ave - 2nd Floor Study and Lounge Space",
+                "290 College Avenue - Study and Lounge Space",
                 86,
                 "loud",
                 "scarce",
@@ -115,12 +141,12 @@ public class DataSeeder implements CommandLineRunner {
                 -80.41796,
                 List.of(20, 38, 61, 80, 91, 97, 94, 88, 76, 59),
                 0.3,
-                image("photo-1556761175-b413da4baf72")
+                "https://vt.edu/content/dam/vt_edu/about/buildings/images/squires-2013.jpg.transform/l-medium/image.jpg"
             ),
             spot(
                 "goodwin-hall",
                 "Goodwin Hall",
-                "Engineering Quad - Commons and Open Seating",
+                "635 Prices Fork Road - Engineering Commons",
                 64,
                 "moderate",
                 "available",
@@ -131,28 +157,28 @@ public class DataSeeder implements CommandLineRunner {
                 -80.42542,
                 List.of(12, 23, 36, 51, 66, 74, 70, 61, 45, 29),
                 0.5,
-                image("photo-1497366811353-6870744d04b2")
+                "https://vt.edu/content/dam/vt_edu/about/buildings/images/signature-engineering-rendering.jpg.transform/l-medium/image.jpg"
             ),
             spot(
                 "graduate-life-center",
                 "Graduate Life Center",
-                "Donaldson Brown - Graduate Study Areas",
+                "155 Otey Street - Donaldson Brown Study Areas",
                 57,
                 "quiet",
                 "available",
                 "available",
                 List.of("wifi", "power", "quiet"),
                 110,
-                37.22370,
-                -80.42130,
+                37.22720,
+                -80.42050,
                 List.of(8, 16, 28, 43, 55, 67, 61, 52, 38, 24),
-                0.7,
-                image("photo-1519389950473-47ba0277781c")
+                0.4,
+                "https://graduatelifecenter.vt.edu/content/graduatelifecenter_vt_edu/en/about-the-GLC/_jcr_content/content/adaptiveimage.transform/m-medium/image.jpg"
             ),
             spot(
                 "art-architecture-library",
                 "Art and Architecture Library",
-                "Cowgill Hall - Quiet Branch Library",
+                "100 Cowgill Hall - Quiet Branch Library",
                 52,
                 "quiet",
                 "available",
@@ -163,57 +189,57 @@ public class DataSeeder implements CommandLineRunner {
                 -80.42160,
                 List.of(7, 14, 23, 37, 51, 63, 58, 49, 33, 18),
                 0.4,
-                image("photo-1519741497674-611481863552")
+                "https://lib.vt.edu/content/dam/lib_vt_edu/artarch/images/P1000120.jpg.transform/xl-medium/image.jpg"
             ),
             spot(
-                "academic-building-one-library",
-                "Academic Building One Library",
-                "North End - Health Sciences Study Space",
+                "vet-med-library",
+                "Veterinary Medicine Library",
+                "Duck Pond Drive - Vet Med Quiet Study",
                 43,
                 "quiet",
                 "available",
                 "available",
                 List.of("wifi", "quiet", "power"),
                 65,
-                37.23510,
-                -80.43170,
+                37.21580,
+                -80.42550,
                 List.of(5, 11, 19, 31, 44, 57, 50, 39, 26, 14),
                 0.9,
-                image("photo-1517245386807-bb43f82c33c4")
+                "https://lib.vt.edu/content/lib_vt_edu/en/about-us/libraries/vetmed-library/_jcr_content/content/adaptiveimage.transform/m-medium/image.jpg"
             ),
             spot(
-                "ati-waoki-center",
-                "Ati: Wa:oki Indigenous Community Center",
-                "Squires 122 - Community Study Space",
-                36,
-                "quiet",
-                "available",
-                "available",
-                List.of("wifi", "community", "library"),
-                50,
-                37.22958,
-                -80.41792,
-                List.of(4, 9, 14, 22, 34, 45, 41, 31, 20, 11),
-                0.3,
-                image("photo-1524758631624-e2822e304c36")
-            ),
-            spot(
-                "el-centro",
-                "El Centro",
-                "Squires 309 - Cultural Center and Community Space",
-                41,
+                "classroom-building",
+                "Classroom Building",
+                "1455 Perry Street - Open Study Areas",
+                74,
                 "moderate",
                 "available",
+                "limited",
+                List.of("wifi", "power", "group"),
+                180,
+                37.23050,
+                -80.43150,
+                List.of(12, 24, 40, 58, 72, 86, 81, 68, 48, 30),
+                0.8,
+                "https://vt.edu/content/dam/vtx_vt_edu/articles/2016/07/new-classroom-building-outside-July12016.jpg.transform/l-medium/image.jpg"
+            ),
+            spot(
+                "mcbryde-hall",
+                "McBryde Hall",
+                "225 Stanger Street - Academic Study Nooks",
+                68,
+                "moderate",
                 "available",
-                List.of("wifi", "community", "library"),
-                30,
-                37.22966,
-                -80.41788,
-                List.of(5, 10, 17, 26, 40, 53, 47, 36, 24, 13),
-                0.3,
-                image("photo-1557804506-669a67965ba0")
+                "limited",
+                List.of("wifi", "power", "group"),
+                120,
+                37.23035,
+                -80.42385,
+                List.of(10, 21, 35, 50, 67, 78, 72, 61, 42, 25),
+                0.4,
+                "https://vt.edu/content/dam/vt_edu/about/buildings/images/mcbryde-2013.jpg.transform/l-medium/image.jpg"
             )
-        ));
+        );
     }
 
     private StudySpot spot(
@@ -249,9 +275,5 @@ public class DataSeeder implements CommandLineRunner {
         spot.setDistance(distance);
         spot.setImageUrl(imageUrl);
         return spot;
-    }
-
-    private String image(String photoId) {
-        return "https://images.unsplash.com/" + photoId + "?auto=format&fit=crop&w=1200&q=80";
     }
 }

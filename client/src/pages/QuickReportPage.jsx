@@ -60,25 +60,33 @@ export default function QuickReportPage() {
   const [submitting, setSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
 
+  const submitReportRequest = async (baseUrl) => {
+    return fetch(`${baseUrl}/api/reports`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        spotId,
+        noiseLevel: noise,
+        occupancy,
+        outletsAvailable: outlets,
+        userId: 'anon-' + Math.random().toString(36).slice(2, 8),
+      }),
+    })
+  }
+
   const handleSubmit = async () => {
     setSubmitting(true)
     setErrorMessage('')
 
     try {
-      const res = await fetch(`${API_BASE_URL}/api/reports`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          spotId,
-          noiseLevel: noise,
-          occupancy,
-          outletsAvailable: outlets,
-          userId: 'anon-' + Math.random().toString(36).slice(2, 8),
-        }),
-      })
+      let res = await submitReportRequest(API_BASE_URL)
+
+      if (!res.ok && window.location.port === '5173') {
+        res = await submitReportRequest('http://127.0.0.1:8080')
+      }
 
       if (!res.ok) {
-        throw new Error('Server returned an error')
+        throw new Error(`Server returned ${res.status}`)
       }
 
       const data = await res.json()
@@ -95,7 +103,7 @@ export default function QuickReportPage() {
       })
     } catch (err) {
       console.error('Report failed:', err)
-      setErrorMessage('Could not submit report. Make sure the backend server is running.')
+      setErrorMessage(`Could not submit report. ${err.message}`)
     } finally {
       setSubmitting(false)
     }

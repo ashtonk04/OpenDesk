@@ -1,0 +1,12 @@
+target/
+data/
+*.log
+
+node_modules/
+client/node_modules/
+client/dist/
+client/dist-ssr/
+
+*.local
+.DS_Store
+.idea/
