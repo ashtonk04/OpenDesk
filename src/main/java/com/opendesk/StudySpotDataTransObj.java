@@ -17,6 +17,7 @@ public class StudySpotDataTransObj
     public double lng;
     public List<Integer> hourlyBusyness;
     public double distance;
+    public String imageUrl;
 
     public StudySpotDataTransObj(
         String id,
@@ -32,7 +33,8 @@ public class StudySpotDataTransObj
         double lat,
         double lng,
         List<Integer> hourlyBusyness,
-        double distance
+        double distance,
+        String imageUrl
     ) {
         this.id = id;
         this.name = name;
@@ -48,5 +50,6 @@ public class StudySpotDataTransObj
         this.lng = lng;
         this.hourlyBusyness = hourlyBusyness;
         this.distance = distance;
+        this.imageUrl = imageUrl;
     }
 }

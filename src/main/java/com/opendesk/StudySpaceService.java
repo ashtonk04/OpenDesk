@@ -1,124 +1,76 @@
 package com.opendesk;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Service
 public class StudySpaceService {
     private static final int[] OCCUPANCY_BUCKETS = {15, 25, 35, 50, 65, 75, 85, 95};
 
-    private final List<StudySpotDataTransObj> spots = new ArrayList<>();
+    private final StudySpotRepository studySpotRepository;
 
-    public StudySpaceService() {
-        spots.add(new StudySpotDataTransObj(
-            "newman-library",
-            "Newman Library",
-            "Main Campus · 4th Floor Reading Room",
-            46,
-            "moderate",
-            "plenty",
-            "available",
-            Arrays.asList("wifi", "coffee"),
-            Instant.now().minusSeconds(4 * 60).toString(),
-            350,
-            37.2284,
-            -80.4234,
-            Arrays.asList(20, 35, 40, 65, 85, 95, 75, 55, 30, 20),
-            0.1
-        ));
-
-        spots.add(new StudySpotDataTransObj(
-            "squires-student-center",
-            "Squires Student Center",
-            "Main Campus · 2nd Floor Study Lounge",
-            82,
-            "loud",
-            "scarce",
-            "limited",
-            Arrays.asList("wifi", "coffee", "printing"),
-            Instant.now().minusSeconds(12 * 60).toString(),
-            120,
-            37.2296,
-            -80.4218,
-            Arrays.asList(10, 20, 45, 70, 90, 95, 85, 80, 60, 40),
-            0.2
-        ));
-
-        spots.add(new StudySpotDataTransObj(
-            "goodwin-hall",
-            "Goodwin Hall",
-            "Engineering Quad · 3rd Floor Commons",
-            18,
-            "silent",
-            "available",
-            "available",
-            Arrays.asList("wifi"),
-            Instant.now().minusSeconds(1 * 60).toString(),
-            80,
-            37.2275,
-            -80.4260,
-            Arrays.asList(5, 10, 15, 25, 40, 55, 35, 20, 10, 5),
-            0.3
-        ));
-
-        spots.add(new StudySpotDataTransObj(
-            "torgersen-bridge",
-            "Torgersen Bridge",
-            "Torgersen Hall · 4th Floor Bridge",
-            12,
-            "quiet",
-            "available",
-            "available",
-            Arrays.asList("wifi"),
-            Instant.now().minusSeconds(2 * 60).toString(),
-            40,
-            37.2268,
-            -80.4255,
-            Arrays.asList(5, 8, 12, 20, 35, 45, 30, 20, 10, 5),
-            0.4
-        ));
+    public StudySpaceService(StudySpotRepository studySpotRepository) {
+        this.studySpotRepository = studySpotRepository;
     }
 
     public List<StudySpotDataTransObj> getAllSpots() {
-        return spots;
+        return studySpotRepository.findAll(Sort.by("distance"))
+            .stream()
+            .map(this::toDto)
+            .toList();
     }
 
     public StudySpotDataTransObj getSpotById(String id) {
-        for (StudySpotDataTransObj spot : spots) {
-            if (spot.id.equals(id)) {
-                return spot;
-            }
-        }
-
-        return null;
+        return studySpotRepository.findById(id)
+            .map(this::toDto)
+            .orElse(null);
     }
 
     public StudySpotDataTransObj submitReport(String id, ReportRequest request) {
-        StudySpotDataTransObj spot = getSpotById(id);
+        StudySpot spot = studySpotRepository.findById(id).orElse(null);
 
         if (spot == null) {
             return null;
         }
 
         if (request.busyness != null) {
-            spot.occupancyPct = adjustOccupancy(spot.occupancyPct, request.busyness);
-            spot.seatStatus = convertPercentToSeatStatus(spot.occupancyPct);
+            spot.setOccupancyPct(adjustOccupancy(spot.getOccupancyPct(), request.busyness));
+            spot.setSeatStatus(convertPercentToSeatStatus(spot.getOccupancyPct()));
         }
 
         if (request.noiseLevel != null) {
-            spot.noiseLevel = request.noiseLevel;
+            spot.setNoiseLevel(request.noiseLevel);
         }
 
         if (request.outletStatus != null) {
-            spot.outletStatus = request.outletStatus;
+            spot.setOutletStatus(request.outletStatus);
         }
 
-        spot.lastUpdated = Instant.now().toString();
-        return spot;
+        spot.setLastUpdated(Instant.now().toString());
+        return toDto(studySpotRepository.save(spot));
+    }
+
+    private StudySpotDataTransObj toDto(StudySpot spot) {
+        return new StudySpotDataTransObj(
+            spot.getId(),
+            spot.getName(),
+            spot.getSubtitle(),
+            spot.getOccupancyPct(),
+            spot.getNoiseLevel(),
+            spot.getOutletStatus(),
+            spot.getSeatStatus(),
+            spot.getAmenities(),
+            spot.getLastUpdated(),
+            spot.getTotalSeats(),
+            spot.getLat(),
+            spot.getLng(),
+            spot.getHourlyBusyness(),
+            spot.getDistance(),
+            spot.getImageUrl()
+        );
     }
 
     private int adjustOccupancy(int currentPct, String busyness) {

@@ -8,9 +8,17 @@ import { useSpots } from '../contexts/SpotsContext'
 // Approximate positions as % of a campus map area
 const PIN_POSITIONS = {
   'newman-library': { top: '45%', left: '40%' },
+  'newman-learning-commons': { top: '47%', left: '42%' },
+  'newman-quiet-floors': { top: '43%', left: '38%' },
   'squires-student-center': { top: '35%', left: '55%' },
   'goodwin-hall': { top: '60%', left: '30%' },
   'torgersen-bridge': { top: '65%', left: '25%' },
+  'torgersen-atrium': { top: '62%', left: '28%' },
+  'graduate-life-center': { top: '78%', left: '52%' },
+  'art-architecture-library': { top: '38%', left: '33%' },
+  'academic-building-one-library': { top: '24%', left: '22%' },
+  'ati-waoki-center': { top: '32%', left: '58%' },
+  'el-centro': { top: '38%', left: '58%' },
 }
 
 function getPinColor(pct, noiseLevel) {

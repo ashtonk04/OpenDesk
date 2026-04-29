@@ -34,6 +34,17 @@ export default function SpotCard({ spot }) {
       className="bg-surface-container-low rounded-xl p-6 flex flex-col gap-4 shadow-sm hover:bg-surface-container transition-colors cursor-pointer"
       onClick={() => navigate(`/spots/${spot.id}`)}
     >
+      {spot.imageUrl && (
+        <div className="h-36 -mx-2 -mt-2 rounded-lg overflow-hidden bg-surface-container-high">
+          <img
+            src={spot.imageUrl}
+            alt=""
+            className="w-full h-full object-cover"
+            loading="lazy"
+          />
+        </div>
+      )}
+
       <div className="flex items-start justify-between">
         <div>
           <h3 className="font-headline font-bold text-on-surface text-base leading-tight">{spot.name}</h3>

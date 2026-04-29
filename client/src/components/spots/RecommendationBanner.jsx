@@ -10,6 +10,15 @@ export default function RecommendationBanner({ spot }) {
         className="relative overflow-hidden rounded-3xl p-6 text-white shadow-lg"
         style={{ background: 'linear-gradient(135deg, #67022b, #861f41)' }}
       >
+        {spot.imageUrl && (
+          <img
+            src={spot.imageUrl}
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover opacity-35"
+            loading="lazy"
+          />
+        )}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#2e3235]/85 to-[#67022b]/70" />
         {/* Decorative blobs */}
         <div className="absolute top-0 right-0 w-40 h-40 rounded-full opacity-20 -translate-y-1/2 translate-x-1/2"
           style={{ background: 'radial-gradient(circle, #ff8934, transparent)' }} />
