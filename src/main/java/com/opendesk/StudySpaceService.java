@@ -9,6 +9,8 @@ import java.util.List;
 
 @Service
 public class StudySpaceService {
+    private static final int[] OCCUPANCY_BUCKETS = {15, 25, 35, 50, 65, 75, 85, 95};
+
     private final List<StudySpotDataTransObj> spots = new ArrayList<>();
 
     public StudySpaceService() {
@@ -103,8 +105,8 @@ public class StudySpaceService {
         }
 
         if (request.busyness != null) {
-            spot.occupancyPct = convertBusynessToPercent(request.busyness);
-            spot.seatStatus = convertBusynessToSeatStatus(request.busyness);
+            spot.occupancyPct = adjustOccupancy(spot.occupancyPct, request.busyness);
+            spot.seatStatus = convertPercentToSeatStatus(spot.occupancyPct);
         }
 
         if (request.noiseLevel != null) {
@@ -119,35 +121,62 @@ public class StudySpaceService {
         return spot;
     }
 
-    private int convertBusynessToPercent(String busyness) {
+    private int adjustOccupancy(int currentPct, String busyness) {
+        int currentIndex = findClosestBucketIndex(currentPct);
+        int moderateIndex = findClosestBucketIndex(50);
+
         if (busyness.equalsIgnoreCase("empty")) {
-            return 15;
+            currentIndex = currentIndex - 2;
+        }
+        else if (busyness.equalsIgnoreCase("crowded")
+            || busyness.equalsIgnoreCase("packed")) {
+            currentIndex = currentIndex + 2;
+        }
+        else if (busyness.equalsIgnoreCase("moderate")) {
+            if (currentIndex < moderateIndex) {
+                currentIndex++;
+            }
+            else if (currentIndex > moderateIndex) {
+                currentIndex--;
+            }
         }
 
-        if (busyness.equalsIgnoreCase("moderate")) {
-            return 50;
+        if (currentIndex < 0) {
+            currentIndex = 0;
         }
 
-        if (busyness.equalsIgnoreCase("crowded") || busyness.equalsIgnoreCase("packed")) {
-            return 85;
+        if (currentIndex >= OCCUPANCY_BUCKETS.length) {
+            currentIndex = OCCUPANCY_BUCKETS.length - 1;
         }
 
-        return 50;
+        return OCCUPANCY_BUCKETS[currentIndex];
     }
 
-    private String convertBusynessToSeatStatus(String busyness) {
-        if (busyness.equalsIgnoreCase("empty")) {
+    private int findClosestBucketIndex(int percentage) {
+        int closestIndex = 0;
+        int smallestDifference = Math.abs(percentage - OCCUPANCY_BUCKETS[0]);
+
+        for (int i = 1; i < OCCUPANCY_BUCKETS.length; i++) {
+            int difference = Math.abs(percentage - OCCUPANCY_BUCKETS[i]);
+
+            if (difference < smallestDifference) {
+                smallestDifference = difference;
+                closestIndex = i;
+            }
+        }
+
+        return closestIndex;
+    }
+
+    private String convertPercentToSeatStatus(int percentage) {
+        if (percentage < 60) {
             return "available";
         }
 
-        if (busyness.equalsIgnoreCase("moderate")) {
+        if (percentage < 85) {
             return "limited";
         }
 
-        if (busyness.equalsIgnoreCase("crowded") || busyness.equalsIgnoreCase("packed")) {
-            return "limited";
-        }
-
-        return "available";
+        return "full";
     }
 }

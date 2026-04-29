@@ -4,7 +4,7 @@ import AppHeader from '../components/layout/AppHeader'
 import Icon from '../components/shared/Icon'
 import { useSpot, useSpots } from '../contexts/SpotsContext'
 
-const API_BASE_URL = 'http://localhost:8080'
+const API_BASE_URL = ''
 
 const NOISE_OPTIONS = [
   { value: 'quiet', label: 'Quiet', icon: 'volume_off', color: '#2e7d32' },
