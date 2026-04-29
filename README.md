@@ -1,9 +1,11 @@
 # OpenDesk
-CS 3704 Project
+OpenDesk is a full stack study space tracker application that allows users to view and report occupancy levels, noise levels, and amenities like outlets and WIFI access for on capmus study location in real time. 
 
 Steps
-1) Open a termincal in the project root directory
+1) Clone the repository
 
-2) Run the backend and frontend with: mvn spring-boot:run 
+2) Open a terminal in the project root directory
 
-3) Open a web browser and run: http://localhost:8080
+3) Run the application with command: mvn spring-boot:run
+
+4) Open a web browser and go to: http://localhost:8080
