@@ -1,4 +1,5 @@
 package com.opendesk;
+import java.util.ArrayList;
 import java.util.List;
 
 public class StudySpotDataTransObj
@@ -17,6 +18,7 @@ public class StudySpotDataTransObj
     public double lng;
     public List<Integer> hourlyBusyness;
     public double distance;
+    public String imageUrl;
 
     public StudySpotDataTransObj(
         String id,
@@ -32,7 +34,8 @@ public class StudySpotDataTransObj
         double lat,
         double lng,
         List<Integer> hourlyBusyness,
-        double distance
+        double distance,
+        String imageUrl
     ) {
         this.id = id;
         this.name = name;
@@ -41,12 +44,13 @@ public class StudySpotDataTransObj
         this.noiseLevel = noiseLevel;
         this.outletStatus = outletStatus;
         this.seatStatus = seatStatus;
-        this.amenities = amenities;
+        this.amenities = new ArrayList<>(amenities);
         this.lastUpdated = lastUpdated;
         this.totalSeats = totalSeats;
         this.lat = lat;
         this.lng = lng;
-        this.hourlyBusyness = hourlyBusyness;
+        this.hourlyBusyness = new ArrayList<>(hourlyBusyness);
         this.distance = distance;
+        this.imageUrl = imageUrl;
     }
 }

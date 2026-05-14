@@ -21,9 +21,18 @@ export default function SpotCardMini({ spot }) {
       className="flex items-center gap-4 p-4 bg-surface-container/50 rounded-xl hover:bg-surface-container transition-colors cursor-pointer"
       onClick={() => navigate(`/spots/${spot.id}`)}
     >
-      <div className="w-9 h-9 rounded-full bg-surface-container-high flex items-center justify-center flex-shrink-0">
-        <Icon name="location_on" size={18} className="text-on-surface-variant" />
-      </div>
+      {spot.imageUrl ? (
+        <img
+          src={spot.imageUrl}
+          alt=""
+          className="w-12 h-12 rounded-lg object-cover flex-shrink-0"
+          loading="lazy"
+        />
+      ) : (
+        <div className="w-9 h-9 rounded-full bg-surface-container-high flex items-center justify-center flex-shrink-0">
+          <Icon name="location_on" size={18} className="text-on-surface-variant" />
+        </div>
+      )}
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between mb-1">
           <p className="font-label font-semibold text-on-surface text-sm truncate">{spot.name}</p>

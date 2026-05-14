@@ -80,10 +80,18 @@ export default function SpotDetailPage() {
             </span>
           </div>
 
-          <div
-            className="w-full h-full"
-            style={{ background: 'linear-gradient(135deg, #861f41 0%, #2e3235 100%)' }}
-          />
+          {spot.imageUrl ? (
+            <img
+              src={spot.imageUrl}
+              alt=""
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <div
+              className="w-full h-full"
+              style={{ background: 'linear-gradient(135deg, #861f41 0%, #2e3235 100%)' }}
+            />
+          )}
         </div>
 
         <div className="grid grid-cols-2 gap-3 mb-6">

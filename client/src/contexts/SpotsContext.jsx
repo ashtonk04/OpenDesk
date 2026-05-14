@@ -2,7 +2,7 @@ import { createContext, useContext, useState, useEffect, useCallback } from 'rea
 
 const SpotsContext = createContext(null)
 
-const API_BASE_URL = 'http://localhost:8080'
+const API_BASE_URL = ''
 
 const SEED_SPOTS = [
   {
