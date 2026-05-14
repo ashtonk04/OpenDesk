@@ -1,3 +1,4 @@
+package com.opendesk;
 import java.util.List;
 
 public class StudySpotDataTransObj

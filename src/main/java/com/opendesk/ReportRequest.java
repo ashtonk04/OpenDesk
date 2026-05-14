@@ -1,3 +1,4 @@
+package com.opendesk;
 public class ReportRequest 
 {
     public String busyness;
